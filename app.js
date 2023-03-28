@@ -5,9 +5,10 @@ const mongoose = require('mongoose');
 const app = express();
 const path = require('path');
 const cookieParser = require('cookie-parser');
+const multer = require('multer');
 
 // internal imports
-const { notFoundHandler, errorHandler } = require('./middlewares/common/errorHandler');
+const { errorHandler } = require('./middlewares/common/errorHandler.js');
 const loginRouter = require('./routes/loginRouter');
 const usersRouter = require('./routes/usersRouter');
 const inboxRouter = require('./routes/inboxRouter');
@@ -31,15 +32,15 @@ app.use(express.urlencoded({ extended : true }));
 
 
 // parse cookies
-app.use(cookieParser(process.env.COOKIE_SECRECT))
+app.use(cookieParser(process.env.COOKIE_SECRECT));
+
+// static folder
+app.use('/uploads', express.static(path.join(__dirname, './public/uploads/')));
 
 // routing
 app.use('/api/user', loginRouter);
-app.use('/api/user/users', usersRouter);
+app.use('/api/', usersRouter);
 app.use('/api/user/inbox', inboxRouter);
-
-// error handling
-app.use(notFoundHandler);
 
 // common error handler
 app.use(errorHandler);
@@ -47,7 +48,11 @@ app.use(errorHandler);
 
 const PORT = process.env.SERVER_PORT;
 
-app.listen(PORT, () => {
-    console.log(`Server is running on ${PORT} PORT!`);
+app.listen(PORT, (err) => {
+    if(err){
+        console.log(`Server is running failed on ${PORT} PORT!`);
+    }else{
+        console.log(`Server is running on ${PORT} PORT!`);
+    }
 })
 

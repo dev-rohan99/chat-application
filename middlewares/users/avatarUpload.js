@@ -10,6 +10,24 @@ function avatarUpload(req, res, next){
         'Only allowed for jpeg, jpg or png format!'
     )
 
+    upload.any()(req, res, (err) => {
+        
+        console.log(err.message);
+
+        if(err){
+            res.status(500).json({
+                error : {
+                    avatar : {
+                        msg : err.message
+                    }
+                }
+            })
+        }else{
+            next();
+        }
+
+    });
+
 }
 
 

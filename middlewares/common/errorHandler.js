@@ -1,26 +1,26 @@
-const createError = require('create-error');
-
-function notFoundHandler(req, res, next){
-
-    next(createError(404, 'Your requested content was not found!'))
-
-}
-
+/**
+ * error handler
+ * @param {*} error 
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
 
 // default error handler
-function errorHandler(err, req, res, next){
+function errorHandler(error, req, res, next){
 
-    // res.locals.err = process.env.NODE_ENV = 'development' ? err : {message : err.message};
+    let errorStatus = error.status || 500;
+    let errorMessage = error.message || 'Unknown Errors';
 
-    res.status(err.status || 500).json({
-        title : 'Error Page'
+    res.status(errorStatus).json({
+        status : errorStatus,
+        message : errorMessage,
+        stack : error.stack
     });
-    // next();
 
 }
 
 
 module.exports = {
-    notFoundHandler,
     errorHandler
 }
